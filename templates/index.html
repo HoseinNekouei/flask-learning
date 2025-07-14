@@ -1,7 +1,32 @@
 {% extends 'base.html' %}
 
 {% block head %}
+    <title>Add Task</title>
+{% endblock %}
 
+{% block body %}
     <h1>Add Task</h1>
 
-    {% endblock %}
+    <form method="post" action="/add">
+        <label for="content">Task</label>
+        <input type="text" id="content" name="content" placeholder="Enter new task" required>
+        <input type="submit" value="Add Task">
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Task</th>
+                <th>Added</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>content</td>
+                <td>Data</td>
+                <td>More</td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}
