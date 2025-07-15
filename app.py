@@ -27,16 +27,13 @@ db = SQLAlchemy()
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 db.__init__(app)
 
-# initialize the database with the Flask app
-class Status(Enum):
-    COMPLETED = 'Completed'
-    INCOMPLETED = 'Incompleted'
+task_status = ['Incompleted', 'Completed']
 
 
 class MyTask(db.Model):
     id= db.Column(db.Integer, primary_key = True )
     content= db.Column(db.String(100), nullable= False)
-    status= db.Column(db.Enum (Status, name='task_status'), default= Status.INCOMPLETED.value)
+    status= db.Column(db.Enum (*task_status), name='task_status', default= task_status[0])
     data_created= db.Column(db.DateTime, default= datetime.now)
 
     def __repr__(self):
@@ -47,7 +44,6 @@ class MyTask(db.Model):
 @app.route('/', methods=['GET', 'POST'])
 def index():
 
-    # add a new task
     if request.method == 'POST':
         content = request.form['content']
         new_task= MyTask(content=content)
@@ -62,7 +58,7 @@ def index():
 
     else:
         # see all the current tasks
-        tasks= MyTask.query.order_by(MyTask.data_created.asc()  ).all()
+        tasks= MyTask.query.order_by(MyTask.data_created.asc()).all()
         return render_template('index.html', tasks=tasks)
 
 
@@ -71,3 +67,5 @@ if __name__ == '__main__':
 
     with app.app_context():
         db.create_all()
+
+    app.run(debug=True)
