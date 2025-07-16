@@ -5,44 +5,48 @@
 {% endblock %}
 
 {% block body %}
-    <h1>Add Task</h1>
+    <div class="container">
 
-    <form method="POST" action="/">
+        <h1>Add Task</h1>
+    
+        <form method="POST" action="/">
+    
+            <label for="content">Task</label>
+            <input type="text" id="content" name="content" placeholder="Enter new task" required>
+            <input type="submit" value="Add Task">
+        </form>
+    
+        {% if tasks | length < 1 %}
+        <h3> There are no tasks ... create one here!</h3>
+        
+        {% else %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Task</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+        
+            {% for task in tasks %}
+            <tbody>
+                <tr>
+                    <td>{{ task.data_created.strftime('%Y-%m-%d') }}</td>
+                    <td>{{ task.content}}</td>
+                    <td>{{ task.status }}</td>
+                    <td>
+                        <a href="/delete/{{ task.id }}">Delete</a>
+                        <a href="/update/{{ task.id }}">Edit</a>
+                    </td>
+                </tr>
+            </tbody>
+            {% endfor %}
+        
+        </table>
+        {% endif %}         
 
-        <label for="content">Task</label>
-        <input type="text" id="content" name="content" placeholder="Enter new task" required>
-        <input type="submit" value="Add Task">
-    </form>
-
-    {% if tasks | length < 1 %}
-    <h3> There are no tasks ... create one here!</h3>
-    
-    {% else %}
-    <table>
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Task</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-    
-        {% for task in tasks %}
-        <tbody>
-            <tr>
-                <td>{{ task.data_created.strftime('%Y-%m-%d') }}</td>
-                <td>{{ task.content}}</td>
-                <td>{{ task.status }}</td>
-                <td>
-                    <a href="/delete/{{ task.id }}">Delete</a>
-                    <a href="/update/{{ task.id }}">Edit</a>
-                </td>
-            </tr>
-        </tbody>
-        {% endfor %}
-    
-    </table>
-    {% endif %}         
+    </div>
 
 {% endblock %}

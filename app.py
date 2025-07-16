@@ -25,7 +25,12 @@ db = SQLAlchemy()
 
 # configure the SQLite database, relative to the app instance folder
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
+app.config[]
 db.__init__(app)
+
+
+with app.app_context():
+    db.create_all()
 
 task_status = ['Completed', 'Incompleted']
 
@@ -64,10 +69,10 @@ def index():
 #Delete an Item
 @app.route('/delete/<int:task_id>', methods=['GET', 'POST'])
 def delete_task(task_id: int):
-    tdelete_task= MyTask.query.get_or_404(task_id)
+    delete_task= MyTask.query.get_or_404(task_id)
 
     try:
-        db.session.delete(tdelete_task)
+        db.session.delete(delete_task)
         db.session.commit()
 
     except Exception as e:
@@ -99,7 +104,6 @@ def update_task(task_id: int):
 
 if __name__ == '__main__':
 
-    with app.app_context():
-        db.create_all()
+
 
     app.run(debug=True)
