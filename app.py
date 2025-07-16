@@ -25,12 +25,10 @@ db = SQLAlchemy()
 
 # configure the SQLite database, relative to the app instance folder
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
-app.config[]
+app.config["SQLALCHEMY_TRACK_MODIFICATION"]= False
 db.__init__(app)
 
 
-with app.app_context():
-    db.create_all()
 
 task_status = ['Completed', 'Incompleted']
 
@@ -43,6 +41,10 @@ class MyTask(db.Model):
     def __repr__(self):
         return f"Task {self.id}"
     
+with app.app_context():
+    db.create_all()
+
+
 # route to webpages
 # Homepage
 @app.route('/', methods=['GET', 'POST'])
