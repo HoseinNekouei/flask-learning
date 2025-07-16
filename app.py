@@ -27,14 +27,16 @@ db = SQLAlchemy()
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 db.__init__(app)
 
-task_status = ['Incompleted', 'Completed']
+class Status(Enum):
+    Incompleted = "Incompleted"
+    Completed = "Completed"
 
 
 class MyTask(db.Model):
-    id= db.Column(db.Integer, primary_key = True )
-    content= db.Column(db.String(100), nullable= False)
-    status= db.Column(db.Enum (*task_status), name='task_status', default= task_status[0])
-    data_created= db.Column(db.DateTime, default= datetime.now)
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String(100), nullable=False)
+    status = db.Column(db.Enum(Status), nullable=False, default=Status.Incompleted)
+    data_created = db.Column(db.DateTime, default=datetime.now)
 
     def __repr__(self):
         return f"Task {self.id}"
@@ -58,8 +60,23 @@ def index():
 
     else:
         # see all the current tasks
-        tasks= MyTask.query.order_by(MyTask.data_created.asc()).all()
-        return render_template('index.html', tasks=tasks)
+        add_task= MyTask.query.order_by(MyTask.data_created.asc()).all()
+        return render_template('index.html', tasks=add_task)
+
+
+#Delete an Item
+@app.route('/delete/<int:task_id>', methods=['GET', 'POST'])
+def delete_task(task_id):
+    task= MyTask.query.get_or_404(task_id)
+
+    try:
+        db.session.delete(task)
+        db.session.commit()
+
+    except Exception as e:
+        print(f'Error: {e}')
+
+    return redirect('/')
 
 
 
