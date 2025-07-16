@@ -21,8 +21,8 @@
     <table>
         <thead>
             <tr>
-                <th>Task</th>
                 <th>Date</th>
+                <th>Task</th>
                 <th>Status</th>
                 <th>Action</th>
             </tr>
@@ -31,8 +31,8 @@
         {% for task in tasks %}
         <tbody>
             <tr>
-                <td>{{ task.content}}</td>
                 <td>{{ task.data_created.strftime('%Y-%m-%d') }}</td>
+                <td>{{ task.content}}</td>
                 <td>{{ task.status }}</td>
                 <td>
                     <a href="/delete/{{ task.id }}">Delete</a>
