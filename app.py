@@ -27,15 +27,12 @@ db = SQLAlchemy()
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 db.__init__(app)
 
-class Status(Enum):
-    Incompleted = "Incompleted"
-    Completed = "Completed"
-
+task_status = ['Completed', 'Incompleted']
 
 class MyTask(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(100), nullable=False)
-    status = db.Column(db.Enum(Status), nullable=False, default=Status.Incompleted)
+    status = db.Column(db.String(20), nullable=False, default=task_status[1])
     data_created = db.Column(db.DateTime, default=datetime.now)
 
     def __repr__(self):
@@ -66,11 +63,11 @@ def index():
 
 #Delete an Item
 @app.route('/delete/<int:task_id>', methods=['GET', 'POST'])
-def delete_task(task_id):
-    task= MyTask.query.get_or_404(task_id)
+def delete_task(task_id: int):
+    tdelete_task= MyTask.query.get_or_404(task_id)
 
     try:
-        db.session.delete(task)
+        db.session.delete(tdelete_task)
         db.session.commit()
 
     except Exception as e:
@@ -78,6 +75,26 @@ def delete_task(task_id):
 
     return redirect('/')
 
+
+# update an Item
+@app.route('/update/<int:task_id>', methods=['GET', 'POST'])
+def update_task(task_id: int):
+    
+    update_task= MyTask.query.get_or_404(task_id)
+    
+    if request.method == 'POST':
+        update_task.content= request.form['content']
+
+        try:
+            db.session.commit()
+
+        except Exception as e:
+            print(f'Error: {e}')
+        
+        return redirect('/')
+    
+    else:
+        return render_template('update.html', task= update_task)
 
 
 if __name__ == '__main__':
